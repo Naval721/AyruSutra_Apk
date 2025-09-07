@@ -16,17 +16,34 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ayursutra.patientapp"
+      "bundleIdentifier": "com.ayursutra.patientapp",
+      "icon": "./assets/icon.png",
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#2E7D32"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2E7D32"
       },
-      "package": "com.ayursutra.patientapp"
+      "icon": "./assets/icon.png",
+      "package": "com.ayursutra.patientapp",
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#2E7D32"
+      }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "AyurSutra Patient Companion",
+      "shortName": "AyurSutra",
+      "description": "Your personalized Ayurvedic wellness companion",
+      "themeColor": "#2E7D32",
+      "backgroundColor": "#2E7D32"
     },
     "plugins": [
       [
@@ -36,6 +53,11 @@
           "color": "#2E7D32"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id-here"
+      }
+    }
   }
 }
