@@ -1,5 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import { supabase } from '../lib/supabase';
+import { initFirebaseMessaging, getFCMToken, onForegroundMessage, requestNotificationPermission as requestWebPermission } from '../lib/firebase-notifications';
 
 // Configure notification behavior
 Notifications.setNotificationHandler({
@@ -104,12 +106,101 @@ export const scheduleDailyWellnessTip = async (): Promise<string | null> => {
 
 export const getNotificationToken = async (): Promise<string | null> => {
   try {
-    const token = await Notifications.getExpoPushTokenAsync({
-      projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
-    });
-    return token.data;
+    if (Platform.OS === 'web') {
+      // Use Firebase for web
+      const fcmToken = await getFCMToken();
+      return fcmToken;
+    } else {
+      // Use Expo for mobile
+      const token = await Notifications.getExpoPushTokenAsync({
+        projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+      });
+      return token.data;
+    }
   } catch (error) {
     console.error('Error getting push token:', error);
     return null;
+  }
+};
+
+// Firebase notification functions for web
+export const initializeFirebaseNotifications = async (): Promise<boolean> => {
+  if (Platform.OS !== 'web') return true; // Skip for mobile (use Expo)
+
+  try {
+    const permission = await requestWebPermission();
+    if (!permission) {
+      console.log('Notification permission denied');
+      return false;
+    }
+
+    const messaging = await initFirebaseMessaging();
+    if (!messaging) {
+      console.log('Firebase Messaging not available');
+      return false;
+    }
+
+    const fcmToken = await getFCMToken();
+    if (fcmToken) {
+      console.log('FCM Token obtained:', fcmToken);
+      await saveFCMToken(fcmToken);
+    }
+
+    onForegroundMessage((payload) => {
+      console.log('Foreground message received:', payload);
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error initializing Firebase notifications:', error);
+    return false;
+  }
+};
+
+export const sendFirebaseNotification = async (title: string, message: string, type: string = 'info') => {
+  if (!supabase) {
+    console.error('Supabase not configured');
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.functions.invoke('send-notification', {
+      body: {
+        title,
+        message,
+        type
+      }
+    });
+
+    if (error) {
+      console.error('Error sending notification:', error);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error sending notification:', error);
+  }
+};
+
+export const saveFCMToken = async (token: string) => {
+  if (!supabase) return;
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('user_profiles')
+      .upsert({
+        user_id: user.id,
+        fcm_token: token,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) {
+      console.error('Error saving FCM token:', error);
+    }
+  } catch (error) {
+    console.error('Error saving FCM token:', error);
   }
 };

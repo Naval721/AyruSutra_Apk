@@ -4,12 +4,13 @@ importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compa
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDk9xwF-YdA7OxxNCIB5RLp6iGFSugDaAI",
+  authDomain: "ayursutra-patient-app.firebaseapp.com",
+  projectId: "ayursutra-patient-app",
+  storageBucket: "ayursutra-patient-app.firebasestorage.app",
+  messagingSenderId: "266232140297",
+  appId: "1:266232140297:web:3b7fe140f7992343491ed8",
+  measurementId: "G-BBM261KR5M"
 };
 
 firebase.initializeApp(firebaseConfig);
