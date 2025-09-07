@@ -1,0 +1,85 @@
+<svg width="1242" height="2688" viewBox="0 0 1242 2688" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="backgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E7D32;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8BC34A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8F5E8;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#C8E6C9;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1242" height="2688" fill="url(#backgroundGradient)"/>
+  
+  <!-- Decorative Circles -->
+  <circle cx="200" cy="400" r="120" fill="#E8F5E8" opacity="0.1"/>
+  <circle cx="1042" cy="600" r="180" fill="#E8F5E8" opacity="0.08"/>
+  <circle cx="100" cy="1800" r="200" fill="#E8F5E8" opacity="0.06"/>
+  <circle cx="1100" cy="2000" r="150" fill="#E8F5E8" opacity="0.1"/>
+  <circle cx="600" cy="2400" r="100" fill="#E8F5E8" opacity="0.12"/>
+  
+  <!-- Main Logo Container -->
+  <circle cx="621" cy="1000" r="200" fill="#E8F5E8" opacity="0.15"/>
+  <circle cx="621" cy="1000" r="160" fill="#E8F5E8" opacity="0.25"/>
+  
+  <!-- Central Leaf -->
+  <path d="M621 800C621 800 500 900 500 1000C500 1100 550 1150 621 1200C691 1150 741 1100 741 1000C741 900 621 800 621 800Z" fill="url(#leafGradient)"/>
+  
+  <!-- Leaf Veins -->
+  <path d="M621 800L621 1200" stroke="#2E7D32" stroke-width="12" stroke-linecap="round" opacity="0.8"/>
+  <path d="M550 950L691 950" stroke="#2E7D32" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+  <path d="M530 1000L711 1000" stroke="#2E7D32" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+  <path d="M550 1050L691 1050" stroke="#2E7D32" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Central Om Symbol -->
+  <circle cx="621" cy="1000" r="80" fill="#E8F5E8" opacity="0.9"/>
+  <text x="621" y="1030" font-family="Arial, sans-serif" font-size="64" font-weight="bold" text-anchor="middle" fill="#2E7D32">ॐ</text>
+  
+  <!-- Dosha Symbols around the logo -->
+  <!-- Vata (Air) -->
+  <circle cx="400" cy="800" r="60" fill="#8E24AA" opacity="0.7"/>
+  <path d="M380 800C380 800 390 790 400 800C410 810 420 800 420 800" stroke="#E8F5E8" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <!-- Pitta (Fire) -->
+  <circle cx="842" cy="800" r="60" fill="#F57C00" opacity="0.7"/>
+  <path d="M822 830C822 830 832 810 842 800C852 790 862 810 862 830" stroke="#E8F5E8" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <!-- Kapha (Water) -->
+  <circle cx="400" cy="1200" r="60" fill="#1976D2" opacity="0.7"/>
+  <path d="M380 1200C380 1200 390 1190 400 1200C410 1210 420 1200 420 1200" stroke="#E8F5E8" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <!-- Tridosha (Balance) -->
+  <circle cx="842" cy="1200" r="60" fill="#388E3C" opacity="0.7"/>
+  <path d="M822 1180C822 1180 832 1170 842 1180C852 1190 862 1180 862 1180" stroke="#E8F5E8" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <!-- App Title -->
+  <text x="621" y="1400" font-family="Arial, sans-serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#E8F5E8">AyurSutra</text>
+  
+  <!-- Subtitle -->
+  <text x="621" y="1480" font-family="Arial, sans-serif" font-size="36" font-weight="400" text-anchor="middle" fill="#E8F5E8" opacity="0.9">Patient Companion</text>
+  
+  <!-- Tagline -->
+  <text x="621" y="1550" font-family="Arial, sans-serif" font-size="24" font-weight="300" text-anchor="middle" fill="#E8F5E8" opacity="0.8">Your Wellness Journey Starts Here</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="621" cy="700" r="6" fill="#E8F5E8" opacity="0.6"/>
+  <circle cx="621" cy="1300" r="6" fill="#E8F5E8" opacity="0.6"/>
+  <circle cx="300" cy="1000" r="6" fill="#E8F5E8" opacity="0.6"/>
+  <circle cx="942" cy="1000" r="6" fill="#E8F5E8" opacity="0.6"/>
+  
+  <!-- Bottom decorative pattern -->
+  <circle cx="200" cy="2200" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="300" cy="2250" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="400" cy="2200" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="500" cy="2250" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="600" cy="2200" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="700" cy="2250" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="800" cy="2200" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="900" cy="2250" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="1000" cy="2200" r="4" fill="#E8F5E8" opacity="0.4"/>
+  <circle cx="1100" cy="2250" r="4" fill="#E8F5E8" opacity="0.4"/>
+</svg>

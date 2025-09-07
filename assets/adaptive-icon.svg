@@ -1,0 +1,37 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="512" cy="512" r="512" fill="#2E7D32"/>
+  
+  <!-- Inner Circle -->
+  <circle cx="512" cy="512" r="400" fill="#4CAF50" opacity="0.9"/>
+  
+  <!-- Central Leaf -->
+  <path d="M512 200C512 200 400 300 400 400C400 500 450 550 512 600C574 550 624 500 624 400C624 300 512 200 512 200Z" fill="#E8F5E8"/>
+  
+  <!-- Leaf Veins -->
+  <path d="M512 200L512 600" stroke="#2E7D32" stroke-width="8" stroke-linecap="round"/>
+  <path d="M450 350L574 350" stroke="#2E7D32" stroke-width="6" stroke-linecap="round"/>
+  <path d="M430 400L594 400" stroke="#2E7D32" stroke-width="6" stroke-linecap="round"/>
+  <path d="M450 450L574 450" stroke="#2E7D32" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Central Om Symbol -->
+  <circle cx="512" cy="512" r="60" fill="#E8F5E8" opacity="0.9"/>
+  <text x="512" y="540" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#2E7D32">ॐ</text>
+  
+  <!-- Dosha Symbols -->
+  <!-- Vata (Air) -->
+  <circle cx="350" cy="350" r="40" fill="#8E24AA" opacity="0.8"/>
+  <path d="M330 350C330 350 340 340 350 350C360 360 370 350 370 350" stroke="#E8F5E8" stroke-width="4" stroke-linecap="round" fill="none"/>
+  
+  <!-- Pitta (Fire) -->
+  <circle cx="674" cy="350" r="40" fill="#F57C00" opacity="0.8"/>
+  <path d="M654 380C654 380 664 360 674 350C684 340 694 360 694 380" stroke="#E8F5E8" stroke-width="4" stroke-linecap="round" fill="none"/>
+  
+  <!-- Kapha (Water) -->
+  <circle cx="350" cy="674" r="40" fill="#1976D2" opacity="0.8"/>
+  <path d="M330 674C330 674 340 664 350 674C360 684 370 674 370 674" stroke="#E8F5E8" stroke-width="4" stroke-linecap="round" fill="none"/>
+  
+  <!-- Tridosha (Balance) -->
+  <circle cx="674" cy="674" r="40" fill="#388E3C" opacity="0.8"/>
+  <path d="M654 654C654 654 664 644 674 654C684 664 694 654 694 654" stroke="#E8F5E8" stroke-width="4" stroke-linecap="round" fill="none"/>
+</svg>
