@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, Dimensions } from 'react-native';
 import {
   Text,
   Card,
@@ -8,15 +8,24 @@ import {
   ProgressBar,
   Chip,
   FAB,
+  useTheme,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useUpcomingTherapies, useProgressData } from '../hooks/useSupabase';
 import { LoadingIndicator } from '../components/LoadingIndicator';
+import { AnimatedCard } from '../components/ui/AnimatedCard';
+import { GradientBackground } from '../components/ui/GradientBackground';
+import { ProgressRing } from '../components/ui/ProgressRing';
+import { FloatingActionButton } from '../components/ui/FloatingActionButton';
+
+const { width } = Dimensions.get('window');
 
 export const DashboardScreen: React.FC = () => {
   const navigation = useNavigation();
+  const theme = useTheme();
   const { patient } = useAuth();
   const { data: upcomingTherapies, isLoading: therapiesLoading, refetch: refetchTherapies } = useUpcomingTherapies();
   const { data: progressData, isLoading: progressLoading, refetch: refetchProgress } = useProgressData();
@@ -32,11 +41,11 @@ export const DashboardScreen: React.FC = () => {
 
   const getDoshaColor = (dosha: string) => {
     switch (dosha) {
-      case 'vata': return '#8E24AA';
-      case 'pitta': return '#F57C00';
-      case 'kapha': return '#1976D2';
-      case 'tridosha': return '#388E3C';
-      default: return '#666';
+      case 'vata': return theme.colors.vata;
+      case 'pitta': return theme.colors.pitta;
+      case 'kapha': return theme.colors.kapha;
+      case 'tridosha': return theme.colors.tridosha;
+      default: return theme.colors.onSurfaceVariant;
     }
   };
 
@@ -50,286 +59,394 @@ export const DashboardScreen: React.FC = () => {
     }
   };
 
+  const getDoshaIcon = (dosha: string) => {
+    switch (dosha) {
+      case 'vata': return 'weather-windy';
+      case 'pitta': return 'fire';
+      case 'kapha': return 'water';
+      case 'tridosha': return 'balance';
+      default: return 'help-circle';
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
-        }
-      >
-        {/* Welcome Section */}
-        <Card style={styles.welcomeCard}>
-          <Card.Content>
-            <Text variant="headlineSmall" style={styles.welcomeTitle}>
-              Welcome back, {patient?.name}!
-            </Text>
-            <Text variant="bodyMedium" style={styles.welcomeSubtitle}>
-              Your wellness journey continues
-            </Text>
-            
-            {patient?.primary_dosha && (
-              <View style={styles.doshaSection}>
-                <Chip
-                  mode="outlined"
-                  style={[styles.doshaChip, { borderColor: getDoshaColor(patient.primary_dosha) }]}
-                  textStyle={{ color: getDoshaColor(patient.primary_dosha) }}
-                >
-                  {patient.primary_dosha.charAt(0).toUpperCase() + patient.primary_dosha.slice(1)} Dosha
-                </Chip>
-                <Text variant="bodySmall" style={styles.doshaDescription}>
-                  {getDoshaDescription(patient.primary_dosha)}
+    <GradientBackground variant="surface">
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
+          }
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header Section */}
+          <AnimatedCard style={styles.headerCard} animated delay={0}>
+            <View style={styles.headerContent}>
+              <View style={styles.welcomeSection}>
+                <Text style={[styles.welcomeTitle, { color: theme.colors.primary }]}>
+                  Welcome back, {patient?.name}! 👋
+                </Text>
+                <Text style={[styles.welcomeSubtitle, { color: theme.colors.onSurfaceVariant }]}>
+                  Your wellness journey continues
                 </Text>
               </View>
-            )}
-          </Card.Content>
-        </Card>
+              
+              {patient?.primary_dosha && (
+                <View style={styles.doshaSection}>
+                  <Chip
+                    mode="outlined"
+                    style={[
+                      styles.doshaChip,
+                      { borderColor: getDoshaColor(patient.primary_dosha) }
+                    ]}
+                    textStyle={{ color: getDoshaColor(patient.primary_dosha) }}
+                    icon={getDoshaIcon(patient.primary_dosha)}
+                  >
+                    {patient.primary_dosha.charAt(0).toUpperCase() + patient.primary_dosha.slice(1)}
+                  </Chip>
+                </View>
+              )}
+            </View>
+          </AnimatedCard>
 
-        {/* Quick Stats */}
-        <View style={styles.statsContainer}>
-          <Card style={styles.statCard}>
-            <Card.Content style={styles.statContent}>
-              <Text variant="headlineMedium" style={styles.statNumber}>
-                {progressData?.completedTherapies || 0}
-              </Text>
-              <Text variant="bodyMedium" style={styles.statLabel}>
-                Therapies Completed
-              </Text>
-            </Card.Content>
-          </Card>
-
-          <Card style={styles.statCard}>
-            <Card.Content style={styles.statContent}>
-              <Text variant="headlineMedium" style={styles.statNumber}>
-                {progressData?.upcomingTherapies || 0}
-              </Text>
-              <Text variant="bodyMedium" style={styles.statLabel}>
-                Upcoming Sessions
-              </Text>
-            </Card.Content>
-          </Card>
-        </View>
-
-        {/* Progress Overview */}
-        {progressData && progressData.totalTherapies > 0 && (
-          <Card style={styles.progressCard}>
-            <Card.Content>
-              <Text variant="titleMedium" style={styles.progressTitle}>
-                Treatment Progress
-              </Text>
-              <View style={styles.progressContainer}>
-                <ProgressBar
-                  progress={progressData.completionPercentage / 100}
-                  color="#2E7D32"
-                  style={styles.progressBar}
+          {/* Progress Ring Section */}
+          {progressData && progressData.totalTherapies > 0 && (
+            <AnimatedCard style={styles.progressCard} animated delay={100}>
+              <View style={styles.progressContent}>
+                <View style={styles.progressInfo}>
+                  <Text style={[styles.progressTitle, { color: theme.colors.primary }]}>
+                    Treatment Progress
+                  </Text>
+                  <Text style={[styles.progressSubtitle, { color: theme.colors.onSurfaceVariant }]}>
+                    {progressData.completedTherapies} of {progressData.totalTherapies} sessions completed
+                  </Text>
+                </View>
+                <ProgressRing
+                  progress={progressData.completionPercentage}
+                  size={100}
+                  strokeWidth={8}
+                  color={theme.colors.primary}
+                  animated
                 />
-                <Text variant="bodyMedium" style={styles.progressText}>
-                  {Math.round(progressData.completionPercentage)}% Complete
+              </View>
+            </AnimatedCard>
+          )}
+
+          {/* Quick Stats */}
+          <View style={styles.statsContainer}>
+            <AnimatedCard style={styles.statCard} animated delay={200}>
+              <View style={styles.statContent}>
+                <View style={[styles.statIcon, { backgroundColor: theme.colors.primaryContainer }]}>
+                  <MaterialCommunityIcons
+                    name="check-circle"
+                    size={24}
+                    color={theme.colors.primary}
+                  />
+                </View>
+                <Text style={[styles.statNumber, { color: theme.colors.primary }]}>
+                  {progressData?.completedTherapies || 0}
+                </Text>
+                <Text style={[styles.statLabel, { color: theme.colors.onSurfaceVariant }]}>
+                  Completed
                 </Text>
               </View>
-            </Card.Content>
-          </Card>
-        )}
+            </AnimatedCard>
 
-        {/* Next Therapy */}
-        {nextTherapy ? (
-          <Card style={styles.nextTherapyCard}>
-            <Card.Content>
-              <Text variant="titleMedium" style={styles.nextTherapyTitle}>
-                Next Therapy Session
-              </Text>
-              <Text variant="headlineSmall" style={styles.therapyName}>
-                {nextTherapy.name}
-              </Text>
-              <Text variant="bodyMedium" style={styles.therapyDate}>
-                {new Date(nextTherapy.scheduled_date).toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </Text>
-              <Text variant="bodySmall" style={styles.therapyDuration}>
-                Duration: {nextTherapy.duration_minutes} minutes
-              </Text>
-              <Button
-                mode="outlined"
-                onPress={() => navigation.navigate('Schedule' as never, { screen: 'TherapyDetail', params: { therapyId: nextTherapy.id } } as never)}
-                style={styles.viewDetailsButton}
-              >
-                View Details
-              </Button>
-            </Card.Content>
-          </Card>
-        ) : (
-          <Card style={styles.noTherapyCard}>
-            <Card.Content>
-              <Text variant="titleMedium" style={styles.noTherapyTitle}>
-                No Upcoming Therapies
-              </Text>
-              <Text variant="bodyMedium" style={styles.noTherapyText}>
-                Your therapy schedule is clear. Check back later for updates.
-              </Text>
-            </Card.Content>
-          </Card>
-        )}
+            <AnimatedCard style={styles.statCard} animated delay={250}>
+              <View style={styles.statContent}>
+                <View style={[styles.statIcon, { backgroundColor: theme.colors.tertiaryContainer }]}>
+                  <MaterialCommunityIcons
+                    name="calendar-clock"
+                    size={24}
+                    color={theme.colors.tertiary}
+                  />
+                </View>
+                <Text style={[styles.statNumber, { color: theme.colors.tertiary }]}>
+                  {progressData?.upcomingTherapies || 0}
+                </Text>
+                <Text style={[styles.statLabel, { color: theme.colors.onSurfaceVariant }]}>
+                  Upcoming
+                </Text>
+              </View>
+            </AnimatedCard>
+          </View>
 
-        {/* Quick Actions */}
-        <View style={styles.actionsContainer}>
-          <Button
-            mode="contained"
-            onPress={() => navigation.navigate('Schedule' as never)}
-            style={styles.actionButton}
-            icon="calendar-clock"
-          >
-            View Schedule
-          </Button>
-          <Button
-            mode="outlined"
-            onPress={() => navigation.navigate('Progress' as never)}
-            style={styles.actionButton}
-            icon="chart-line"
-          >
-            Track Progress
-          </Button>
-        </View>
+          {/* Next Therapy */}
+          {nextTherapy ? (
+            <AnimatedCard
+              style={[styles.nextTherapyCard, { backgroundColor: theme.colors.primaryContainer }]}
+              animated
+              delay={300}
+              onPress={() => navigation.navigate('Schedule' as never, { screen: 'TherapyDetail', params: { therapyId: nextTherapy.id } } as never)}
+            >
+              <View style={styles.nextTherapyContent}>
+                <View style={styles.nextTherapyHeader}>
+                  <MaterialCommunityIcons
+                    name="calendar-star"
+                    size={24}
+                    color={theme.colors.primary}
+                  />
+                  <Text style={[styles.nextTherapyTitle, { color: theme.colors.primary }]}>
+                    Next Session
+                  </Text>
+                </View>
+                <Text style={[styles.therapyName, { color: theme.colors.primaryDark }]}>
+                  {nextTherapy.name}
+                </Text>
+                <Text style={[styles.therapyDate, { color: theme.colors.primary }]}>
+                  {new Date(nextTherapy.scheduled_date).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </Text>
+                <View style={styles.therapyDetails}>
+                  <View style={styles.therapyDetailItem}>
+                    <MaterialCommunityIcons
+                      name="clock-outline"
+                      size={16}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                    <Text style={[styles.therapyDuration, { color: theme.colors.onSurfaceVariant }]}>
+                      {nextTherapy.duration_minutes} min
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </AnimatedCard>
+          ) : (
+            <AnimatedCard style={styles.noTherapyCard} animated delay={300}>
+              <View style={styles.noTherapyContent}>
+                <MaterialCommunityIcons
+                  name="calendar-check"
+                  size={48}
+                  color={theme.colors.onSurfaceVariant}
+                />
+                <Text style={[styles.noTherapyTitle, { color: theme.colors.onSurfaceVariant }]}>
+                  No Upcoming Sessions
+                </Text>
+                <Text style={[styles.noTherapyText, { color: theme.colors.onSurfaceVariant }]}>
+                  Your schedule is clear. Check back for updates.
+                </Text>
+              </View>
+            </AnimatedCard>
+          )}
 
-        {isLoading && <LoadingIndicator />}
-      </ScrollView>
+          {/* Quick Actions */}
+          <View style={styles.actionsContainer}>
+            <AnimatedCard
+              style={styles.actionCard}
+              animated
+              delay={400}
+              onPress={() => navigation.navigate('Schedule' as never)}
+            >
+              <View style={styles.actionContent}>
+                <MaterialCommunityIcons
+                  name="calendar-clock"
+                  size={24}
+                  color={theme.colors.primary}
+                />
+                <Text style={[styles.actionText, { color: theme.colors.primary }]}>
+                  View Schedule
+                </Text>
+              </View>
+            </AnimatedCard>
 
-      {/* FAB for AI Chat */}
-      <FAB
-        icon="chat"
-        style={styles.fab}
-        onPress={() => navigation.navigate('Chat' as never)}
-        label="AI Assistant"
-      />
-    </SafeAreaView>
+            <AnimatedCard
+              style={styles.actionCard}
+              animated
+              delay={450}
+              onPress={() => navigation.navigate('Progress' as never)}
+            >
+              <View style={styles.actionContent}>
+                <MaterialCommunityIcons
+                  name="chart-line"
+                  size={24}
+                  color={theme.colors.secondary}
+                />
+                <Text style={[styles.actionText, { color: theme.colors.secondary }]}>
+                  Track Progress
+                </Text>
+              </View>
+            </AnimatedCard>
+          </View>
+
+          {isLoading && <LoadingIndicator />}
+        </ScrollView>
+
+        {/* Floating Action Button for AI Chat */}
+        <FloatingActionButton
+          icon="chat"
+          label="AI Assistant"
+          onPress={() => navigation.navigate('Chat' as never)}
+          variant="primary"
+          size="large"
+          animated
+          delay={500}
+        />
+      </SafeAreaView>
+    </GradientBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
   },
   scrollView: {
     flex: 1,
     padding: 16,
   },
-  welcomeCard: {
-    marginBottom: 16,
-    elevation: 2,
+  headerCard: {
+    marginBottom: 20,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  welcomeSection: {
+    flex: 1,
   },
   welcomeTitle: {
-    color: '#2E7D32',
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 4,
   },
   welcomeSubtitle: {
-    color: '#666',
-    marginTop: 4,
+    fontSize: 16,
+    fontWeight: '400',
   },
   doshaSection: {
-    marginTop: 16,
+    marginLeft: 12,
   },
   doshaChip: {
     alignSelf: 'flex-start',
-    marginBottom: 8,
   },
-  doshaDescription: {
-    color: '#666',
-    fontStyle: 'italic',
+  progressCard: {
+    marginBottom: 20,
+  },
+  progressContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  progressInfo: {
+    flex: 1,
+    marginRight: 20,
+  },
+  progressTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  progressSubtitle: {
+    fontSize: 14,
+    fontWeight: '400',
   },
   statsContainer: {
     flexDirection: 'row',
-    marginBottom: 16,
+    marginBottom: 20,
     gap: 12,
   },
   statCard: {
     flex: 1,
-    elevation: 2,
   },
   statContent: {
     alignItems: 'center',
   },
-  statNumber: {
-    color: '#2E7D32',
-    fontWeight: 'bold',
-  },
-  statLabel: {
-    color: '#666',
-    textAlign: 'center',
-    marginTop: 4,
-  },
-  progressCard: {
-    marginBottom: 16,
-    elevation: 2,
-  },
-  progressTitle: {
-    color: '#2E7D32',
+  statIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 12,
   },
-  progressContainer: {
-    gap: 8,
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 4,
   },
-  progressBar: {
-    height: 8,
-    borderRadius: 4,
-  },
-  progressText: {
-    color: '#666',
+  statLabel: {
+    fontSize: 14,
+    fontWeight: '500',
     textAlign: 'center',
   },
   nextTherapyCard: {
-    marginBottom: 16,
-    elevation: 2,
-    backgroundColor: '#E8F5E8',
+    marginBottom: 20,
+  },
+  nextTherapyContent: {
+    padding: 4,
+  },
+  nextTherapyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   nextTherapyTitle: {
-    color: '#2E7D32',
-    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   therapyName: {
-    color: '#1B5E20',
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 8,
   },
   therapyDate: {
-    color: '#2E7D32',
-    marginBottom: 4,
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 12,
+  },
+  therapyDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  therapyDetailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   therapyDuration: {
-    color: '#666',
-    marginBottom: 16,
-  },
-  viewDetailsButton: {
-    alignSelf: 'flex-start',
+    fontSize: 14,
+    fontWeight: '400',
+    marginLeft: 4,
   },
   noTherapyCard: {
-    marginBottom: 16,
-    elevation: 2,
-    backgroundColor: '#F5F5F5',
+    marginBottom: 20,
+  },
+  noTherapyContent: {
+    alignItems: 'center',
+    paddingVertical: 20,
   },
   noTherapyTitle: {
-    color: '#666',
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 12,
     marginBottom: 8,
   },
   noTherapyText: {
-    color: '#666',
+    fontSize: 14,
+    fontWeight: '400',
+    textAlign: 'center',
   },
   actionsContainer: {
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 80,
+    marginBottom: 100,
   },
-  actionButton: {
+  actionCard: {
     flex: 1,
   },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#2E7D32',
+  actionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+  actionText: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });

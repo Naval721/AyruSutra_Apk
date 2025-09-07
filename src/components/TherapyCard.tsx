@@ -5,8 +5,11 @@ import {
   Text,
   Chip,
   IconButton,
+  useTheme,
 } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Therapy } from '../types';
+import { AnimatedCard } from './ui/AnimatedCard';
 
 interface TherapyCardProps {
   therapy: Therapy;
@@ -14,18 +17,20 @@ interface TherapyCardProps {
 }
 
 export const TherapyCard: React.FC<TherapyCardProps> = ({ therapy, onPress }) => {
+  const theme = useTheme();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled':
-        return '#2196F3';
+        return theme.colors.info;
       case 'in_progress':
-        return '#FF9800';
+        return theme.colors.warning;
       case 'completed':
-        return '#4CAF50';
+        return theme.colors.success;
       case 'cancelled':
-        return '#F44336';
+        return theme.colors.error;
       default:
-        return '#666';
+        return theme.colors.onSurfaceVariant;
     }
   };
 
@@ -41,6 +46,21 @@ export const TherapyCard: React.FC<TherapyCardProps> = ({ therapy, onPress }) =>
         return 'close-circle';
       default:
         return 'help-circle';
+    }
+  };
+
+  const getStatusBackgroundColor = (status: string) => {
+    switch (status) {
+      case 'scheduled':
+        return theme.colors.info + '20';
+      case 'in_progress':
+        return theme.colors.warning + '20';
+      case 'completed':
+        return theme.colors.success + '20';
+      case 'cancelled':
+        return theme.colors.error + '20';
+      default:
+        return theme.colors.surfaceVariant;
     }
   };
 
@@ -74,100 +94,149 @@ export const TherapyCard: React.FC<TherapyCardProps> = ({ therapy, onPress }) =>
 
   const isUpcoming = therapy.status === 'scheduled' || therapy.status === 'in_progress';
   const isCompleted = therapy.status === 'completed';
+  const statusColor = getStatusColor(therapy.status);
+  const statusBgColor = getStatusBackgroundColor(therapy.status);
 
   return (
-    <Card style={styles.card} onPress={onPress}>
-      <Card.Content>
+    <AnimatedCard
+      style={[
+        styles.card,
+        { backgroundColor: statusBgColor }
+      ]}
+      onPress={onPress}
+      animated
+    >
+      <View style={styles.cardContent}>
+        {/* Header */}
         <View style={styles.header}>
           <View style={styles.titleContainer}>
-            <Text variant="titleMedium" style={styles.title} numberOfLines={2}>
+            <Text style={[styles.title, { color: theme.colors.onSurface }]} numberOfLines={2}>
               {therapy.name}
             </Text>
-            <Chip
-              mode="outlined"
-              style={[styles.statusChip, { borderColor: getStatusColor(therapy.status) }]}
-              textStyle={{ color: getStatusColor(therapy.status) }}
-              icon={getStatusIcon(therapy.status)}
-            >
-              {therapy.status.replace('_', ' ').toUpperCase()}
-            </Chip>
+            <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
+              <MaterialCommunityIcons
+                name={getStatusIcon(therapy.status)}
+                size={16}
+                color={theme.colors.surface}
+              />
+              <Text style={[styles.statusText, { color: theme.colors.surface }]}>
+                {therapy.status.replace('_', ' ').toUpperCase()}
+              </Text>
+            </View>
           </View>
         </View>
 
+        {/* Date and Time */}
         <View style={styles.dateTimeContainer}>
           <View style={styles.dateContainer}>
-            <Text variant="bodyMedium" style={styles.dateLabel}>
-              {isUpcoming ? 'Scheduled' : isCompleted ? 'Completed' : 'Date'}
-            </Text>
-            <Text variant="bodyLarge" style={styles.dateText}>
+            <View style={styles.dateHeader}>
+              <MaterialCommunityIcons
+                name="calendar"
+                size={16}
+                color={statusColor}
+              />
+              <Text style={[styles.dateLabel, { color: statusColor }]}>
+                {isUpcoming ? 'Scheduled' : isCompleted ? 'Completed' : 'Date'}
+              </Text>
+            </View>
+            <Text style={[styles.dateText, { color: theme.colors.onSurface }]}>
               {new Date(therapy.scheduled_date).toLocaleDateString('en-US', {
-                weekday: 'short',
+                weekday: 'long',
                 month: 'short',
                 day: 'numeric',
                 year: 'numeric',
               })}
             </Text>
-            <Text variant="bodySmall" style={styles.relativeDate}>
+            <Text style={[styles.relativeDate, { color: theme.colors.onSurfaceVariant }]}>
               {formatDate(therapy.scheduled_date)} at {formatTime(therapy.scheduled_date)}
             </Text>
           </View>
 
           <View style={styles.durationContainer}>
-            <Text variant="bodyMedium" style={styles.durationLabel}>
-              Duration
-            </Text>
-            <Text variant="bodyLarge" style={styles.durationText}>
+            <View style={styles.durationHeader}>
+              <MaterialCommunityIcons
+                name="clock-outline"
+                size={16}
+                color={statusColor}
+              />
+              <Text style={[styles.durationLabel, { color: statusColor }]}>
+                Duration
+              </Text>
+            </View>
+            <Text style={[styles.durationText, { color: theme.colors.onSurface }]}>
               {therapy.duration_minutes} min
             </Text>
           </View>
         </View>
 
+        {/* Description */}
         {therapy.description && (
-          <Text variant="bodyMedium" style={styles.description} numberOfLines={2}>
-            {therapy.description}
-          </Text>
+          <View style={styles.descriptionContainer}>
+            <Text style={[styles.description, { color: theme.colors.onSurfaceVariant }]} numberOfLines={2}>
+              {therapy.description}
+            </Text>
+          </View>
         )}
 
+        {/* Precautions */}
         {therapy.precautions && therapy.precautions.length > 0 && (
-          <View style={styles.precautionsContainer}>
-            <Text variant="bodySmall" style={styles.precautionsLabel}>
-              Key Precautions:
-            </Text>
-            <Text variant="bodySmall" style={styles.precautionsText} numberOfLines={2}>
+          <View style={[styles.precautionsContainer, { backgroundColor: theme.colors.warning + '15' }]}>
+            <View style={styles.precautionsHeader}>
+              <MaterialCommunityIcons
+                name="alert-circle"
+                size={16}
+                color={theme.colors.warning}
+              />
+              <Text style={[styles.precautionsLabel, { color: theme.colors.warning }]}>
+                Key Precautions
+              </Text>
+            </View>
+            <Text style={[styles.precautionsText, { color: theme.colors.warning }]} numberOfLines={2}>
               {therapy.precautions.slice(0, 2).join(' • ')}
               {therapy.precautions.length > 2 && '...'}
             </Text>
           </View>
         )}
 
+        {/* Completed Badge */}
         {isCompleted && (
-          <View style={styles.completedContainer}>
-            <Text variant="bodySmall" style={styles.completedText}>
-              ✓ Session completed successfully
+          <View style={[styles.completedContainer, { backgroundColor: theme.colors.success + '20' }]}>
+            <MaterialCommunityIcons
+              name="check-circle"
+              size={16}
+              color={theme.colors.success}
+            />
+            <Text style={[styles.completedText, { color: theme.colors.success }]}>
+              Session completed successfully
             </Text>
           </View>
         )}
-      </Card.Content>
 
-      <Card.Actions style={styles.actions}>
-        <IconButton
-          icon="chevron-right"
-          size={20}
-          onPress={onPress}
-          style={styles.chevron}
-        />
-      </Card.Actions>
-    </Card>
+        {/* Action Indicator */}
+        <View style={styles.actionIndicator}>
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={20}
+            color={statusColor}
+          />
+        </View>
+      </View>
+    </AnimatedCard>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: 12,
-    elevation: 2,
+    marginBottom: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  cardContent: {
+    padding: 20,
+    position: 'relative',
   },
   header: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -177,81 +246,111 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    color: '#2E7D32',
-    fontWeight: 'bold',
-    marginRight: 8,
+    fontSize: 18,
+    fontWeight: '700',
+    marginRight: 12,
+    lineHeight: 24,
   },
-  statusChip: {
-    alignSelf: 'flex-start',
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 4,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   dateTimeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   dateContainer: {
     flex: 1,
   },
+  dateHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    gap: 4,
+  },
   dateLabel: {
-    color: '#666',
     fontSize: 12,
-    marginBottom: 2,
+    fontWeight: '600',
   },
   dateText: {
-    color: '#2E7D32',
+    fontSize: 16,
     fontWeight: '600',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   relativeDate: {
-    color: '#999',
     fontSize: 12,
+    fontWeight: '400',
   },
   durationContainer: {
     alignItems: 'flex-end',
   },
-  durationLabel: {
-    color: '#666',
-    fontSize: 12,
-    marginBottom: 2,
+  durationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    gap: 4,
   },
-  durationText: {
-    color: '#2E7D32',
+  durationLabel: {
+    fontSize: 12,
     fontWeight: '600',
   },
+  durationText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  descriptionContainer: {
+    marginBottom: 12,
+  },
   description: {
-    color: '#666',
-    marginBottom: 8,
+    fontSize: 14,
+    fontWeight: '400',
     lineHeight: 20,
   },
   precautionsContainer: {
-    backgroundColor: '#FFF3E0',
-    padding: 8,
-    borderRadius: 6,
-    marginBottom: 8,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  precautionsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+    gap: 4,
   },
   precautionsLabel: {
-    color: '#E65100',
+    fontSize: 12,
     fontWeight: '600',
-    marginBottom: 2,
   },
   precautionsText: {
-    color: '#E65100',
     fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 16,
   },
   completedContainer: {
-    backgroundColor: '#E8F5E8',
-    padding: 8,
-    borderRadius: 6,
-    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    gap: 8,
   },
   completedText: {
-    color: '#2E7D32',
+    fontSize: 14,
     fontWeight: '600',
   },
-  actions: {
-    justifyContent: 'flex-end',
-  },
-  chevron: {
-    margin: 0,
+  actionIndicator: {
+    position: 'absolute',
+    right: 20,
+    top: '50%',
+    transform: [{ translateY: -10 }],
   },
 });

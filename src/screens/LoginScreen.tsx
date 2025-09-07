@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Dimensions } from 'react-native';
 import {
   Text,
   TextInput,
   Button,
   Card,
   Surface,
+  useTheme,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
+import { GradientBackground } from '../components/ui/GradientBackground';
+import { AnimatedCard } from '../components/ui/AnimatedCard';
+
+const { width, height } = Dimensions.get('window');
 
 export const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const theme = useTheme();
   const { signIn } = useAuth();
 
   const handleLogin = async () => {
@@ -37,137 +45,225 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text variant="displaySmall" style={styles.title}>
-            AyurSutra
-          </Text>
-          <Text variant="headlineSmall" style={styles.subtitle}>
-            Patient Companion
-          </Text>
-          <Text variant="bodyLarge" style={styles.description}>
-            Your personalized wellness journey starts here
-          </Text>
-        </View>
-
-        <Card style={styles.card}>
-          <Card.Content>
-            <Text variant="headlineSmall" style={styles.cardTitle}>
-              Welcome Back
+    <GradientBackground variant="primary">
+      <SafeAreaView style={styles.container}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header Section */}
+          <View style={styles.header}>
+            <View style={styles.logoContainer}>
+              <View style={[styles.logoCircle, { backgroundColor: theme.colors.surface }]}>
+                <MaterialCommunityIcons
+                  name="leaf"
+                  size={48}
+                  color={theme.colors.primary}
+                />
+              </View>
+            </View>
+            
+            <Text style={[styles.title, { color: theme.colors.surface }]}>
+              AyurSutra
             </Text>
-            <Text variant="bodyMedium" style={styles.cardSubtitle}>
-              Sign in to access your therapy schedule and wellness guidance
+            <Text style={[styles.subtitle, { color: theme.colors.surface }]}>
+              Patient Companion
             </Text>
+            <Text style={[styles.description, { color: theme.colors.surface }]}>
+              Your personalized wellness journey starts here
+            </Text>
+          </View>
 
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              mode="outlined"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              style={styles.input}
-              disabled={loading}
-            />
+          {/* Login Form */}
+          <AnimatedCard style={styles.loginCard} animated delay={200}>
+            <View style={styles.loginHeader}>
+              <Text style={[styles.loginTitle, { color: theme.colors.primary }]}>
+                Welcome Back
+              </Text>
+              <Text style={[styles.loginSubtitle, { color: theme.colors.onSurfaceVariant }]}>
+                Sign in to access your therapy schedule and wellness guidance
+              </Text>
+            </View>
 
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              mode="outlined"
-              secureTextEntry
-              autoComplete="password"
-              style={styles.input}
-              disabled={loading}
-            />
+            <View style={styles.formContainer}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  label="Email Address"
+                  value={email}
+                  onChangeText={setEmail}
+                  mode="outlined"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  left={<TextInput.Icon icon="email" />}
+                  style={styles.input}
+                  disabled={loading}
+                  theme={{
+                    colors: {
+                      primary: theme.colors.primary,
+                    },
+                  }}
+                />
+              </View>
 
-            <Button
-              mode="contained"
-              onPress={handleLogin}
-              loading={loading}
-              disabled={loading}
-              style={styles.button}
-              contentStyle={styles.buttonContent}
-            >
-              Sign In
-            </Button>
-          </Card.Content>
-        </Card>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  label="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  mode="outlined"
+                  secureTextEntry={!showPassword}
+                  autoComplete="password"
+                  left={<TextInput.Icon icon="lock" />}
+                  right={
+                    <TextInput.Icon
+                      icon={showPassword ? "eye-off" : "eye"}
+                      onPress={() => setShowPassword(!showPassword)}
+                    />
+                  }
+                  style={styles.input}
+                  disabled={loading}
+                  theme={{
+                    colors: {
+                      primary: theme.colors.primary,
+                    },
+                  }}
+                />
+              </View>
 
-        <Surface style={styles.footer}>
-          <Text variant="bodySmall" style={styles.footerText}>
-            Having trouble signing in?{'\n'}
-            Contact your practitioner for assistance.
-          </Text>
-        </Surface>
-      </ScrollView>
-    </SafeAreaView>
+              <Button
+                mode="contained"
+                onPress={handleLogin}
+                loading={loading}
+                disabled={loading || !email.trim() || !password.trim()}
+                style={[styles.loginButton, { backgroundColor: theme.colors.primary }]}
+                contentStyle={styles.loginButtonContent}
+                labelStyle={styles.loginButtonLabel}
+              >
+                {loading ? 'Signing In...' : 'Sign In'}
+              </Button>
+            </View>
+          </AnimatedCard>
+
+          {/* Footer */}
+          <AnimatedCard style={styles.footerCard} animated delay={400}>
+            <View style={styles.footerContent}>
+              <MaterialCommunityIcons
+                name="information"
+                size={20}
+                color={theme.colors.primary}
+              />
+              <Text style={[styles.footerText, { color: theme.colors.onSurfaceVariant }]}>
+                Having trouble signing in? Contact your practitioner for assistance.
+              </Text>
+            </View>
+          </AnimatedCard>
+        </ScrollView>
+      </SafeAreaView>
+    </GradientBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
   },
   scrollContent: {
     flexGrow: 1,
     padding: 20,
+    minHeight: height,
   },
   header: {
     alignItems: 'center',
     marginBottom: 40,
-    marginTop: 40,
+    marginTop: 60,
+  },
+  logoContainer: {
+    marginBottom: 24,
+  },
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   title: {
-    color: '#2E7D32',
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: '700',
     textAlign: 'center',
+    marginBottom: 8,
   },
   subtitle: {
-    color: '#8D6E63',
-    marginTop: 8,
+    fontSize: 20,
+    fontWeight: '600',
     textAlign: 'center',
+    marginBottom: 12,
   },
   description: {
-    color: '#666',
-    marginTop: 12,
+    fontSize: 16,
+    fontWeight: '400',
     textAlign: 'center',
     maxWidth: 300,
+    lineHeight: 24,
   },
-  card: {
-    marginBottom: 20,
-    elevation: 4,
-  },
-  cardTitle: {
-    color: '#2E7D32',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  cardSubtitle: {
-    color: '#666',
+  loginCard: {
     marginBottom: 24,
+  },
+  loginHeader: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  loginTitle: {
+    fontSize: 24,
+    fontWeight: '700',
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  loginSubtitle: {
+    fontSize: 16,
+    fontWeight: '400',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  formContainer: {
+    gap: 20,
+  },
+  inputContainer: {
+    marginBottom: 4,
   },
   input: {
-    marginBottom: 16,
+    backgroundColor: 'transparent',
   },
-  button: {
+  loginButton: {
     marginTop: 8,
+    borderRadius: 12,
   },
-  buttonContent: {
+  loginButtonContent: {
+    paddingVertical: 12,
+  },
+  loginButtonLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  footerCard: {
+    marginBottom: 20,
+  },
+  footerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 8,
   },
-  footer: {
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: '#F5F5F5',
-  },
   footerText: {
-    color: '#666',
-    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '400',
+    marginLeft: 12,
+    flex: 1,
     lineHeight: 20,
   },
 });
