@@ -34,3 +34,4 @@ npm run dev
 
 Build and deploy the `dist` directory using any static hosting or your mobile build pipeline.
 # AyruSutra-apk
+# AyruSutra-apk
