@@ -11,8 +11,8 @@ const checks = [
     name: 'Environment Files',
     check: () => {
       const frontendEnv = fs.existsSync('.env');
-      const backendEnv = fs.existsSync('backend/.env');
-      return frontendEnv && backendEnv;
+      const supabaseEnv = fs.existsSync('supabase/.env');
+      return frontendEnv && supabaseEnv;
     },
     message: '✅ Environment files created'
   },
@@ -22,9 +22,9 @@ const checks = [
     message: '✅ Frontend dependencies installed'
   },
   {
-    name: 'Backend Dependencies',
-    check: () => fs.existsSync('backend/node_modules'),
-    message: '✅ Backend dependencies installed'
+    name: 'Supabase Configuration',
+    check: () => fs.existsSync('supabase/config.toml'),
+    message: '✅ Supabase configuration present'
   },
   {
     name: 'Expo Configuration',
@@ -47,13 +47,14 @@ const checks = [
     message: '✅ Source code structure complete'
   },
   {
-    name: 'Backend Lambda Functions',
+    name: 'Supabase Edge Functions',
     check: () => {
-      const lambdaDir = fs.existsSync('backend/lambda');
-      const assistant = fs.existsSync('backend/lambda/assistant');
-      return lambdaDir && assistant;
+      const functionsDir = fs.existsSync('supabase/functions');
+      const assistant = fs.existsSync('supabase/functions/ai-assistant');
+      const dailyReport = fs.existsSync('supabase/functions/daily-report');
+      return functionsDir && assistant && dailyReport;
     },
-    message: '✅ Backend Lambda functions ready'
+    message: '✅ Supabase Edge Functions ready'
   },
   {
     name: 'Integration Scripts',
@@ -88,8 +89,9 @@ if (allPassed) {
   console.log('🎉 All checks passed! Your app is ready to run.');
   console.log('\n📱 Next steps:');
   console.log('1. Update .env files with your actual credentials');
-  console.log('2. Deploy backend: cd backend && npm run deploy');
-  console.log('3. Start the app: npm start');
+  console.log('2. Deploy Supabase Edge Functions: supabase functions deploy');
+  console.log('3. Deploy database schema: supabase db push');
+  console.log('4. Start the app: npm start');
   console.log('\n🚀 Ready to launch AyurSutra Patient Companion!');
 } else {
   console.log('⚠️  Some checks failed. Please review the setup.');

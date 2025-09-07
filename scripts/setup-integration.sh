@@ -34,11 +34,11 @@ if [ ! -f ".env" ]; then
     print_success ".env file created. Please update with your actual values."
 fi
 
-# Check if backend .env exists
-if [ ! -f "backend/.env" ]; then
-    print_warning "Backend .env file not found. Creating from env.example..."
-    cp backend/env.example backend/.env
-    print_success "Backend .env file created. Please update with your actual values."
+# Check if Supabase .env exists
+if [ ! -f "supabase/.env" ]; then
+    print_warning "Supabase .env file not found. Creating from .env.example..."
+    cp supabase/.env.example supabase/.env
+    print_success "Supabase .env file created. Please update with your actual values."
 fi
 
 print_status "Checking dependencies..."
@@ -55,18 +55,10 @@ if [ -f "package.json" ]; then
     fi
 fi
 
-# Install backend dependencies
-if [ -f "backend/package.json" ]; then
-    print_status "Installing backend dependencies..."
-    cd backend
-    npm install
-    if [ $? -eq 0 ]; then
-        print_success "Backend dependencies installed successfully"
-    else
-        print_error "Failed to install backend dependencies"
-        exit 1
-    fi
-    cd ..
+# Check if Supabase CLI is installed
+if ! command -v supabase &> /dev/null; then
+    print_status "Installing Supabase CLI..."
+    npm install -g supabase
 fi
 
 print_status "Setting up Expo development..."
@@ -82,9 +74,9 @@ echo ""
 print_warning "Next steps:"
 echo "1. Update .env file with your Supabase credentials"
 echo "2. Update .env file with your Firebase credentials"
-echo "3. Update backend/.env with your AWS and API credentials"
-echo "4. Deploy backend: cd backend && npm run deploy"
-echo "5. Update frontend .env with deployed API URLs"
+echo "3. Update supabase/.env with your Gemini API key"
+echo "4. Deploy Supabase Edge Functions: supabase functions deploy"
+echo "5. Deploy database schema: supabase db push"
 echo "6. Start the app: npm start"
 echo ""
 print_success "Ready to run! Use 'npm start' to launch the development server."

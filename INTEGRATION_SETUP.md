@@ -19,14 +19,12 @@ Required variables:
 - `EXPO_PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
 - `EXPO_PUBLIC_FIREBASE_*` - Firebase configuration for notifications
-- `EXPO_PUBLIC_ASSISTANT_URL` - AI assistant API endpoint (set after backend deployment)
-- `EXPO_PUBLIC_DAILY_REPORT_URL` - Daily report API endpoint (set after backend deployment)
 
-#### Backend (backend/.env)
+#### Supabase Edge Functions (.env)
 ```bash
 # Copy the example file
-cd backend
-cp env.example .env
+cd supabase
+cp .env.example .env
 
 # Update with your actual credentials
 nano .env
@@ -34,25 +32,29 @@ nano .env
 
 Required variables:
 - `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key
-- `OPENAI_API_KEY` - Your OpenAI API key
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
+- `GEMINI_API_KEY` - Your Google Gemini API key
 - `FCM_SERVER_KEY` - Your Firebase server key
-- `CDK_DEFAULT_ACCOUNT` - Your AWS account ID
-- `CDK_DEFAULT_REGION` - Your AWS region
 
-### 2. Backend Deployment
+### 2. Supabase Setup
 
 ```bash
-cd backend
+# Install Supabase CLI
+npm install -g supabase
 
-# Install dependencies
-npm install
+# Login to Supabase
+supabase login
 
-# Deploy to AWS
-npm run deploy
+# Link to your project
+supabase link --project-ref your-project-ref
+
+# Deploy Edge Functions
+supabase functions deploy ai-assistant
+supabase functions deploy daily-report
+
+# Deploy database schema
+supabase db push
 ```
-
-After deployment, update your frontend `.env` with the deployed API URLs.
 
 ### 3. Frontend Setup
 
@@ -77,7 +79,7 @@ Your app includes:
 
 ### Core Features
 - ✅ **Authentication** - Supabase Auth integration
-- ✅ **AI Chat Assistant** - Personalized Ayurvedic guidance
+- ✅ **AI Chat Assistant** - Google Gemini-powered Ayurvedic guidance
 - ✅ **Daily Wellness Tracking** - Progress monitoring
 - ✅ **Push Notifications** - Firebase Cloud Messaging
 - ✅ **Offline Support** - AsyncStorage for data persistence
@@ -92,30 +94,32 @@ Your app includes:
 - ✅ **Help & Support** - User guidance and feedback
 
 ### Backend Services
-- ✅ **AI Assistant Lambda** - OpenAI integration for chat
-- ✅ **Daily Report Lambda** - Automated wellness reports
-- ✅ **Notification Lambda** - Push notification management
-- ✅ **Reminder Lambda** - Scheduled reminder processing
+- ✅ **Supabase Edge Functions** - AI assistant and daily reports
+- ✅ **Google Gemini Integration** - Advanced AI capabilities
+- ✅ **Firebase Notifications** - Push notification management
+- ✅ **Supabase Database** - User data and conversation storage
 
 ## 🔧 Configuration Details
 
 ### Supabase Setup
-1. Create a new Supabase project
-2. Get your project URL and anon key
-3. Set up database tables (see `src/types/database.ts`)
-4. Configure RLS policies for security
+1. Create a new Supabase project at https://supabase.com
+2. Get your project URL and anon key from Settings > API
+3. Deploy the database schema: `supabase db push`
+4. Deploy Edge Functions: `supabase functions deploy`
+5. Set up environment variables in Supabase dashboard
 
 ### Firebase Setup
-1. Create a Firebase project
+1. Create a Firebase project at https://console.firebase.google.com
 2. Enable Cloud Messaging
 3. Generate server key and VAPID key
 4. Configure web app settings
+5. Add your domain to authorized domains
 
-### AWS Setup
-1. Configure AWS CLI with your credentials
-2. Install AWS CDK
-3. Deploy the Lambda functions
-4. Note the API Gateway URLs for frontend integration
+### Google Gemini Setup
+1. Go to https://makersuite.google.com/app/apikey
+2. Create a new API key
+3. Add the key to your Supabase Edge Functions environment
+4. Enable the Gemini API in Google Cloud Console
 
 ## 🚀 Running the App
 
