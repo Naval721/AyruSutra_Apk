@@ -19,12 +19,12 @@ envFiles.forEach(file => {
     const content = fs.readFileSync(file.path, 'utf8');
     const hasSupabase = content.includes('hefmoyiinlpwmfmxfjqk.supabase.co');
     const hasFirebase = content.includes('ayursutra-patient-app.firebaseapp.com');
-    const hasGemini = content.includes('GEMINI_API_KEY');
+    const hasGemini = content.includes('AIzaSyCt26NSBSCWT1FEQtO48H0JEm9QPDCkM-4');
     
     console.log(`✅ ${file.name}:`);
     console.log(`   ${hasSupabase ? '✅' : '❌'} Supabase configured`);
     console.log(`   ${hasFirebase ? '✅' : '❌'} Firebase configured`);
-    console.log(`   ${hasGemini ? '❌' : '⚠️ '} Gemini API key needed`);
+    console.log(`   ${hasGemini ? '✅' : '❌'} Gemini API key ${hasGemini ? 'configured' : 'needed'}`);
   } else {
     console.log(`❌ ${file.name}: Missing`);
   }
