@@ -1,7 +1,7 @@
 import { supabase } from './supabase';
 
-const ASSISTANT_URL = import.meta.env.VITE_ASSISTANT_URL as string | undefined;
-const DAILY_REPORT_URL = import.meta.env.VITE_DAILY_REPORT_URL as string | undefined;
+const ASSISTANT_URL = process.env.EXPO_PUBLIC_ASSISTANT_URL as string | undefined;
+const DAILY_REPORT_URL = process.env.EXPO_PUBLIC_DAILY_REPORT_URL as string | undefined;
 
 async function fetchWithAuth(url: string, payload: unknown) {
   let authHeader: Record<string, string> = {};
